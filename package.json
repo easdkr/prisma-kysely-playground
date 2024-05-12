@@ -1,0 +1,29 @@
+{
+  "name": "prisma-kysely-playghround",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "bun run seed.ts"
+  },
+  "devDependencies": {
+    "@prisma/client": "^5.13.0",
+    "@types/bun": "latest",
+    "prisma": "^5.13.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "js-joda": "^1.11.0",
+    "kysely": "^0.27.3",
+    "pg": "^8.11.5",
+    "prisma-extension-kysely": "^2.1.0",
+    "prisma-kysely": "^1.8.0"
+  },
+  "trustedDependencies": [
+    "@prisma/client"
+  ]
+}

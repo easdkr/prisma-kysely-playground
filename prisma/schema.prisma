@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+generator kysely {
+  provider = "prisma-kysely"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id  Int   @id @default(autoincrement())
+  name String
+
+  posts Post[]
+  comments Comment[]
+  postLikes PostLikes[]
+  @@map("users")
+}
+
+model Post {
+  id     Int    @id @default(autoincrement())
+  title  String
+  createdAt DateTime @map("created_at")
+  updatedAt DateTime @map("updated_at")
+  authorId Int @map("author_id")
+  likes Int @default(0)
+
+  author User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postLikes PostLikes[]
+  comments Comment[]
+  @@map("posts")
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model PostLikes {
+  id     Int    @id @default(autoincrement())
+  postId Int @map("post_id")
+  userId Int @map("user_id")
+  createdAt DateTime @map("created_at")
+  updatedAt DateTime @map("updated_at")
+  user User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@map("post_likes")
+  @@index([postId])
+  @@index([userId])
+}
+
+model Comment {
+  id     Int    @id @default(autoincrement())
+  text   String
+  postId Int @map("post_id")
+  userId Int @map("user_id")
+  createdAt DateTime @map("created_at")
+  updatedAt DateTime @map("updated_at")
+  user User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@map("comments")
+  @@index([postId])
+  @@index([userId])
+}
