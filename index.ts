@@ -17,19 +17,42 @@ async function bootstrap() {
   );
 
   // 게시물 생성
-  const posts = await postService.findRecentCreated(5, "prisma");
-  console.log(posts.map((post) => post.toString()));
+  const createdPost = await postService.createMany([
+    {
+      title: "Hi there!",
+      authorId: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      title: "Hello World!",
+      authorId: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]);
+  console.log(
+    "created-post",
+    createdPost.map((post) => post.toString())
+  );
+
+  // 최근 생성된 게시물 조회
+  const recentPosts = await postService.findRecentCreated(2, "kysely");
+  console.log(
+    "recentPost",
+    recentPosts.map((post) => post.toString())
+  );
 
   // 게시물 좋아요 (성공 1, 실패 1)
   await Promise.all([
-    postService.like({ userId: 1, postId: 1 }),
-    postService.like({ userId: -1, postId: 100 }),
+    postService.like({ userId: 1, postId: recentPosts[0].id }),
+    postService.like({ userId: -1, postId: recentPosts[0].id }),
   ]);
 
   // 확인
   await prisma.post
     .findFirst({
-      where: { id: 1 },
+      where: { id: recentPosts[0].id },
     })
     .then((post) => {
       console.log(post);

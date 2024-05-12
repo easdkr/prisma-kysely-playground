@@ -9,7 +9,7 @@ import kyselyExtension from "prisma-extension-kysely";
 import type { DB } from "./generated/types";
 
 export const prisma = new PrismaClient({
-  log: ["query"],
+  // log: ["query"],
 }).$extends(
   kyselyExtension({
     kysely: (driver) =>

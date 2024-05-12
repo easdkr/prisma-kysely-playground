@@ -5,12 +5,14 @@ import {
 import { Post, type IPost } from "./post.entity";
 
 export class PostCommandRepository {
-  public async createMany(posts: Omit<IPost, "id">[]): Promise<Post[]> {
+  public async createMany(
+    posts: (Omit<IPost, "id" | "author"> & { authorId: number })[]
+  ): Promise<Post[]> {
     const ids = await prisma.$kysely
       .insertInto("posts")
       .values(
         posts.map((p) => ({
-          author_id: p.author.id,
+          author_id: p.authorId,
           title: p.title,
           created_at: p.createdAt,
           updated_at: p.updatedAt,
@@ -32,6 +34,7 @@ export class PostCommandRepository {
         "u.name as authorName",
       ])
       .where("p.id", "in", ids)
+      .orderBy("p.id", "desc")
       .execute()
       .then((rows) =>
         rows.map((row) =>

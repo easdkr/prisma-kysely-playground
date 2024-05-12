@@ -21,7 +21,9 @@ export class PostService {
       : await this.postQueryRepository.findRecentCreatedUsingBuilder(count);
   }
 
-  public async createMany(posts: Omit<IPost, "id">[]): Promise<Post[]> {
+  public async createMany(
+    posts: (Omit<IPost, "id" | "author"> & { authorId: number })[]
+  ): Promise<Post[]> {
     return await this.postCommandRepository.createMany(posts);
   }
 

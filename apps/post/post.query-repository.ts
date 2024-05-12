@@ -68,7 +68,7 @@ export class PostQueryRepository {
         "u.id as authorId",
         "u.name as authorName",
       ])
-      .orderBy("p.created_at", "desc")
+      .orderBy("p.id", "desc")
       .limit(count)
       .execute()
       .then((rows) =>
